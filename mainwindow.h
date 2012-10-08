@@ -17,11 +17,10 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_pushButton_2_clicked();
     void onClientConnected();
     void onAuthenticationFailed();
-
     void on_computeButton_clicked();
+    void on_connectPushButton_clicked();
 
 private:
     Ui::MainWindow *ui;

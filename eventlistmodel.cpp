@@ -39,8 +39,8 @@ EventListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 }
 
-gcal_event_t
+CalendarEvent*
 EventListModel::getEventAt(int position)
 {
-    return gcal_event_element(m_events, position);
+    return new CalendarEvent(this, gcal_event_element(m_events, position));
 }

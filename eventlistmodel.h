@@ -2,6 +2,7 @@
 #define EVENTLISTMODEL_H
 
 #include <QAbstractListModel>
+#include "calendarevent.h"
 
 extern "C" {
     #include <gcalendar.h>
@@ -16,7 +17,13 @@ public:
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
 
-    gcal_event_t getEventAt(int position);
+    /**
+     * @brief getEventAt returns the Event stored in the specified
+     * position.
+     * @param position Is the index where the event is found.
+     * @return A pointer to an
+     */
+    CalendarEvent* getEventAt(int position);
 
 private:
     bool m_isEmpty;

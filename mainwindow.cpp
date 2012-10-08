@@ -29,23 +29,20 @@ MainWindow::~MainWindow()
 void
 MainWindow::onClientConnected()
 {
+    ui->statusBar->showMessage(tr("Connected to Google Calendar"));
     ui->computeButton->setDisabled(false);
 }
 
 void MainWindow::onAuthenticationFailed()
 {
     QMessageBox box;
+
+    ui->statusBar->showMessage(tr("Authentication failed"));
+
     box.setIcon(QMessageBox::Critical);
     box.setText(tr("Authentication on Google calendar failed."));
     box.setInformativeText(tr("Please check your username and password."));
     box.exec();
-}
-
-
-void MainWindow::on_pushButton_2_clicked()
-{
-    m_client->setAuthenticationData(ui->usernameLineEdit->text(),
-                                    ui->passwordLineEdit->text());
 }
 
 void MainWindow::on_computeButton_clicked()
@@ -54,9 +51,17 @@ void MainWindow::on_computeButton_clicked()
 
     EventListModel* model = m_client->getEventsModel();
 
+    // Test code to show that we are really able to parse the Events
     for(int i = 0; i < model->rowCount(QModelIndex()); i++)
     {
-        gcal_event_t event = model->getEventAt(i);
-        qDebug() << "Event = " << gcal_event_get_title(event);
+        CalendarEvent* event = model->getEventAt(i);
+        qDebug() << "Event = " << event->getTitle() << " from " << event->getStart();
+        delete event;
     }
+}
+
+void MainWindow::on_connectPushButton_clicked()
+{
+    m_client->setAuthenticationData(ui->usernameLineEdit->text(),
+                                    ui->passwordLineEdit->text());
 }

@@ -25,10 +25,12 @@ INCLUDEPATH += /usr/include/libgcal
 SOURCES += main.cpp\
         mainwindow.cpp \
     calendarclient.cpp \
-    eventlistmodel.cpp
+    eventlistmodel.cpp \
+    calendarevent.cpp
 
 HEADERS  += mainwindow.h \
     calendarclient.h \
-    eventlistmodel.h
+    eventlistmodel.h \
+    calendarevent.h
 
 FORMS    += mainwindow.ui
