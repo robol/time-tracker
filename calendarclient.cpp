@@ -6,6 +6,13 @@ CalendarClient::CalendarClient(QObject *parent) :
     QObject(parent)
 {
     m_client = gcal_new(GCALENDAR);
+    m_eventListModel = new EventListModel();
+}
+
+CalendarClient::~CalendarClient()
+{
+    delete m_eventListModel;
+    gcal_delete(m_client);
 }
 
 void
@@ -35,4 +42,13 @@ CalendarClient::setAuthenticationData(QString username, QString password)
     m_password = password;
 
     QtConcurrent::run(this, &CalendarClient::performAuthentication);
+}
+
+EventListModel*
+CalendarClient::getEventsModel()
+{
+    gcal_get_events(m_client, &m_events);
+    m_eventListModel->setEventsArray(&m_events);
+
+    return m_eventListModel;
 }

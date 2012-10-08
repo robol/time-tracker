@@ -21,6 +21,8 @@ private slots:
     void onClientConnected();
     void onAuthenticationFailed();
 
+    void on_computeButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     CalendarClient *m_client;

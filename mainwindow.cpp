@@ -47,3 +47,16 @@ void MainWindow::on_pushButton_2_clicked()
     m_client->setAuthenticationData(ui->usernameLineEdit->text(),
                                     ui->passwordLineEdit->text());
 }
+
+void MainWindow::on_computeButton_clicked()
+{
+    qDebug() << "Starting to compute the total time used for the tasks";
+
+    EventListModel* model = m_client->getEventsModel();
+
+    for(int i = 0; i < model->rowCount(QModelIndex()); i++)
+    {
+        gcal_event_t event = model->getEventAt(i);
+        qDebug() << "Event = " << gcal_event_get_title(event);
+    }
+}

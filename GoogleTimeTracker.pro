@@ -4,14 +4,13 @@
 #
 #-------------------------------------------------
 
-#
+
 # Hint: To compile this project against a local version of
 # libgcal, say, a compiled version put in a folder named "dependencies",
-# simply use the following statement in this project file.
+# simply use the following statements in this project file.
 #
-# LIBS += -L"$$_PRO_FILE_PWD_/dependencies/libgal-x.y.z/.libs" -lgal
-# INCLUDEPATH += -I"$$_PRO_FILE_PWD_/dependencies/libgal-x.y.z/inc"
-#
+# LIBS += -L"$$_PRO_FILE_PWD_/dependencies/libgcal-0.9.6/.libs" -lgcal
+# INCLUDEPATH += "$$_PRO_FILE_PWD_/dependencies/libgcal-0.9.6/inc"#
 
 QT       += core gui
 
@@ -25,9 +24,11 @@ INCLUDEPATH += /usr/include/libgcal
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    calendarclient.cpp
+    calendarclient.cpp \
+    eventlistmodel.cpp
 
 HEADERS  += mainwindow.h \
-    calendarclient.h
+    calendarclient.h \
+    eventlistmodel.h
 
 FORMS    += mainwindow.ui

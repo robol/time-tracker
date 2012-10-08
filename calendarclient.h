@@ -2,6 +2,7 @@
 #define CALENDARCLIENT_H
 
 #include <QObject>
+#include "eventlistmodel.h"
 
 extern "C" {
     #include <gcalendar.h>
@@ -16,6 +17,7 @@ class CalendarClient : public QObject
     Q_OBJECT
 public:
     explicit CalendarClient(QObject *parent = 0);
+    ~CalendarClient();
 
     /**
      * @brief setAuthenticationData can be used to select username and
@@ -31,6 +33,15 @@ public:
      */
     void setAuthenticationData(QString username, QString password);
 
+    /**
+     * @brief getEventsModel returns a Model representing the Events of the
+     * user calendars.
+     *
+     * @return A pointer to the EventListModel* representing the events
+     * of the requested calendar.
+     */
+    EventListModel* getEventsModel();
+
 private:
 
     void performAuthentication();
@@ -39,6 +50,8 @@ private:
     QString m_password;
 
     gcal_t m_client;
+    gcal_event_array m_events;
+    EventListModel* m_eventListModel;
     
 signals:
     /**
