@@ -37,6 +37,17 @@ public:
      */
     QDateTime getEnd();
 
+    /**
+     * @brief getDuration can be used to find the duration of an event. In the case
+     * of an event without a start and/or end date, 0 is returned.
+     *
+     * @return The duration of the even in hours, or 0.0 if no start and/or end
+     * date are set.
+     */
+    double getDuration();
+
+    QString getXml() { return QString (gcal_event_get_xml(m_event)); }
+
 
 private:
     gcal_event_t m_event;

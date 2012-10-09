@@ -21,6 +21,9 @@ private slots:
     void onAuthenticationFailed();
     void on_computeButton_clicked();
     void on_connectPushButton_clicked();
+    void on_calendarComboBox_currentIndexChanged(int index);
+    void on_clientLoadingEventsStarted();
+    void on_clientLoadingEventsFinished();
 
 private:
     Ui::MainWindow *ui;

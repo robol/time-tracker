@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "eventlistmodel.h"
+#include "calendarlistmodel.h"
 
 extern "C" {
     #include <gcalendar.h>
@@ -42,6 +43,22 @@ public:
      */
     EventListModel* getEventsModel();
 
+    /**
+     * @brief getCalendarsModel can be used to retrieve a Model representing the
+     * current list of the calendars of the connected user, or an empty model
+     * if the user is disconnected.
+     *
+     * @return A pointer to the internal CalendarsListModel. It should not be freed.
+     */
+    CalendarListModel* getCalendarsModel();
+
+    /**
+     * @brief selectCalendar select the active calendar used to retrieve events.
+     * @param index must be a positive integer from 0 to the number of calendars loaded,
+     * that can be retrieved by the model obtained through getCalendarsModel().
+     */
+    void selectCalendar(int index);
+
 private:
 
     void performAuthentication();
@@ -51,7 +68,23 @@ private:
 
     gcal_t m_client;
     gcal_event_array m_events;
+
+    /**
+     * @brief m_eventListModel is a model representing the events in the calendar
+     * currently selected.
+     */
     EventListModel* m_eventListModel;
+
+    /**
+     * @brief m_calendarListModel is a model representing the calendars of the user.
+     */
+    CalendarListModel* m_calendarListModel;
+
+    /**
+     * @brief reloadEvents reload asynchronously the events from the currently selected
+     * calendar and then set them in the EventsModel.
+     */
+    void reloadEvents();
     
 signals:
     /**
@@ -71,6 +104,18 @@ signals:
      * that leads to an authentication failed response from Google.
      */
     void authenticationFailed();
+
+    /**
+     * @brief loadingEventStarted is emitted when the client starts downloading the events
+     * from the calendar.
+     */
+    void loadingEventStarted();
+
+    /**
+     * @brief loadingEventsFinished is emitted after loadingEventsStarted() when the client
+     * has finished loading the events.
+     */
+    void loadingEventsFinished();
     
 public slots:
     

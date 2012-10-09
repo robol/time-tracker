@@ -15,9 +15,14 @@ MainWindow::MainWindow(QWidget *parent) :
     // as inactive until the connection is established.
     ui->computeButton->setDisabled(true);
 
-    // Connect callbacks
+    // Connect callbacks for the CalendarClient
     QObject::connect(m_client, SIGNAL(connected()), this, SLOT(onClientConnected()));
     QObject::connect(m_client, SIGNAL(authenticationFailed()), this, SLOT(onAuthenticationFailed()));
+    QObject::connect(m_client, SIGNAL(loadingEventStarted()), this, SLOT(on_clientLoadingEventsStarted()));
+    QObject::connect(m_client, SIGNAL(loadingEventsFinished()), this, SLOT(on_clientLoadingEventsFinished()));
+
+    // Get the calendar model and set it in the ComboBox
+    ui->calendarComboBox->setModel(m_client->getCalendarsModel());
 }
 
 MainWindow::~MainWindow()
@@ -55,7 +60,7 @@ void MainWindow::on_computeButton_clicked()
     for(int i = 0; i < model->rowCount(QModelIndex()); i++)
     {
         CalendarEvent* event = model->getEventAt(i);
-        qDebug() << "Event = " << event->getTitle() << " from " << event->getStart();
+        // qDebug() << "Event = " << event->getTitle() << " Duration = " << event->getDuration();
         delete event;
     }
 }
@@ -64,4 +69,19 @@ void MainWindow::on_connectPushButton_clicked()
 {
     m_client->setAuthenticationData(ui->usernameLineEdit->text(),
                                     ui->passwordLineEdit->text());
+}
+
+void MainWindow::on_calendarComboBox_currentIndexChanged(int index)
+{
+    m_client->selectCalendar(index);
+}
+
+void MainWindow::on_clientLoadingEventsStarted()
+{
+    ui->statusBar->showMessage(tr("Downloading events..."));
+}
+
+void MainWindow::on_clientLoadingEventsFinished()
+{
+    ui->statusBar->showMessage(tr("Downloading events completed"));
 }

@@ -9,8 +9,8 @@
 # libgcal, say, a compiled version put in a folder named "dependencies",
 # simply use the following statements in this project file.
 #
-# LIBS += -L"$$_PRO_FILE_PWD_/dependencies/libgcal-0.9.6/.libs" -lgcal
-# INCLUDEPATH += "$$_PRO_FILE_PWD_/dependencies/libgcal-0.9.6/inc"#
+# LIBS += -L"$$_PRO_FILE_PWD_/dependencies/libgcal-x.y.z/.libs" -lgcal
+# INCLUDEPATH += "$$_PRO_FILE_PWD_/dependencies/libgcal-x.y.z/inc"
 
 QT       += core gui
 
@@ -19,18 +19,24 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GoogleTimeTracker
 TEMPLATE = app
 
-LIBS += -lgcal
-INCLUDEPATH += /usr/include/libgcal
+# LIBS += -lgcal
+# INCLUDEPATH += /usr/include/libgcal
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    calendarclient.cpp \
-    eventlistmodel.cpp \
-    calendarevent.cpp
+LIBS += -L"$$_PRO_FILE_PWD_/dependencies/libgcal/build/src" -lgcal
+INCLUDEPATH += "$$_PRO_FILE_PWD_/dependencies/libgcal/inc"
 
-HEADERS  += mainwindow.h \
-    calendarclient.h \
-    eventlistmodel.h \
-    calendarevent.h
 
-FORMS    += mainwindow.ui
+SOURCES += time-tracker/main.cpp\
+        time-tracker/mainwindow.cpp \
+    time-tracker/calendarclient.cpp \
+    time-tracker/eventlistmodel.cpp \
+    time-tracker/calendarevent.cpp \
+    time-tracker/calendarlistmodel.cpp
+
+HEADERS  += time-tracker/mainwindow.h \
+    time-tracker/calendarclient.h \
+    time-tracker/eventlistmodel.h \
+    time-tracker/calendarevent.h \
+    time-tracker/calendarlistmodel.h
+
+FORMS    += time-tracker/mainwindow.ui
