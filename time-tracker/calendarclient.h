@@ -65,19 +65,45 @@ public:
 
 private:
 
+    /**
+     * @brief performAuthentication, as the name suggests, perform the hard work
+     * behind the authentication process once that setAuthenticationData() has been called.
+     * Please note that a call to the latter routine will automatically trigger a call
+     * to performAuthentication in a background thread, so there is no reason for calling
+     * this method directly.
+     */
     void performAuthentication();
 
-//    char * m_token;
-//    char * m_token_secret;
-
+    /**
+     * @brief m_username The username provided by the user. Please note that these
+     * fields will be deprecated as soon this class is migrated to the user of
+     * GDataOAuth1Authorizer.
+     */
     QString m_username;
+
+    /**
+     * @brief m_password The password provided by the user. Please note that these
+     * fields will be deprecated as soon this class is migrated to the user of
+     * GDataOAuth1Authorizer.
+     */
     QString m_password;
 
+    /**
+     * @brief m_service is used to retrieve data from the Google servers.
+     */
     GDataCalendarService *m_service;
 
     // GDataOAuth1Authorizer *m_authorizer;
+    /**
+     * @brief m_authorizer The authorizer used to perform authentication. While this is
+     * now a GDataClientLoginAuthorizer, a migration to the use of GDataOAuth1Authorizer
+     * could be evaluted in the future.
+     */
     GDataClientLoginAuthorizer *m_authorizer;
 
+    /**
+     * @brief m_client is a pointer to the user selected calendar.
+     */
     GDataCalendarCalendar *m_client;
 
     /**
@@ -120,7 +146,7 @@ Q_SIGNALS:
      * @brief loadingEventStarted is emitted when the client starts downloading the events
      * from the calendar.
      */
-    void loadingEventStarted();
+    void loadingEventsStarted();
 
     /**
      * @brief loadingEventsFinished is emitted after loadingEventsStarted() when the client

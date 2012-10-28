@@ -1,4 +1,5 @@
 #include "eventlistmodel.h"
+
 extern "C" {
     #include <glib.h>
 }

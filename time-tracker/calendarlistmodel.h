@@ -20,7 +20,19 @@ public:
     explicit CalendarListModel(QObject *parent = 0);
     ~CalendarListModel();
 
+    /**
+     * @brief rowCount counts the number of elements in the model.
+     * @param parent Is bogus, will not be used.
+     * @return the number of elements present in the model.
+     */
     int rowCount(const QModelIndex &parent) const;
+
+    /**
+     * @brief data Is the overriden data function for the model.
+     * @param index
+     * @param role
+     * @return
+     */
     QVariant data(const QModelIndex &index, int role) const;
 
     /**

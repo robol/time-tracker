@@ -24,8 +24,10 @@ private Q_SLOTS:
     void on_computeButton_clicked();
     void on_connectPushButton_clicked();
     void on_calendarComboBox_currentIndexChanged(int index);
-    void on_clientLoadingEventsStarted();
-    void on_clientLoadingEventsFinished();
+
+public Q_SLOTS:
+    void clientLoadingEventsStarted();
+    void clientLoadingEventsFinished();
 
 private:
     Ui::MainWindow *ui;

@@ -104,7 +104,7 @@ CalendarClient::selectCalendar(int index)
 void
 CalendarClient::reloadEvents()
 {
-    loadingEventStarted();
+    loadingEventsStarted();
 
     m_eventListModel->clearEvents();
 

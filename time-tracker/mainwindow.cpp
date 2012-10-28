@@ -20,8 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     // Connect callbacks for the CalendarClient
     QObject::connect(m_client, SIGNAL(connected()), this, SLOT(onClientConnected()));
     QObject::connect(m_client, SIGNAL(authenticationFailed()), this, SLOT(onAuthenticationFailed()));
-    QObject::connect(m_client, SIGNAL(loadingEventStarted()), this, SLOT(on_clientLoadingEventsStarted()));
-    QObject::connect(m_client, SIGNAL(loadingEventsFinished()), this, SLOT(on_clientLoadingEventsFinished()));
+    QObject::connect(m_client, SIGNAL(loadingEventsStarted()), this, SLOT(clientLoadingEventsStarted()));
+    QObject::connect(m_client, SIGNAL(loadingEventsFinished()), this, SLOT(clientLoadingEventsFinished()));
 
     // Get the calendar model and set it in the ComboBox
     ui->calendarComboBox->setModel(m_client->getCalendarsModel());
@@ -78,12 +78,12 @@ void MainWindow::on_calendarComboBox_currentIndexChanged(int index)
     m_client->selectCalendar(index);
 }
 
-void MainWindow::on_clientLoadingEventsStarted()
+void MainWindow::clientLoadingEventsStarted()
 {
     ui->statusBar->showMessage(tr("Downloading events..."));
 }
 
-void MainWindow::on_clientLoadingEventsFinished()
+void MainWindow::clientLoadingEventsFinished()
 {
     ui->statusBar->showMessage(tr("Downloading events completed"));
 }
