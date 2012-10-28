@@ -2,10 +2,11 @@
 #define CALENDARLISTMODEL_H
 
 #include <QAbstractListModel>
+#include "calendar.h"
 
 extern "C" {
     #include <gdata/services/calendar/gdata-calendar-calendar.h>
-    #include <gdata/gdata-feed.h>
+    #include <gdata/services/calendar/gdata-calendar-feed.h>
 }
 
 /**
@@ -36,7 +37,7 @@ public:
     GDataCalendarCalendar* getCalendar(int index);
 
 private:
-    GDataFeed *m_calendars;
+    QList<Calendar*> *m_calendars;
     
 };
 

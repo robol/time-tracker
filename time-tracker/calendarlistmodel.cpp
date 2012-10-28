@@ -1,4 +1,5 @@
 #include "calendarlistmodel.h"
+#include <QDebug>
 
 extern "C" {
     #include <glib.h>
@@ -7,26 +8,19 @@ extern "C" {
 CalendarListModel::CalendarListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_calendars = NULL;
+    m_calendars = new QList<Calendar*>();
 }
 
 CalendarListModel::~CalendarListModel()
 {
-    if (m_calendars)
-        g_object_unref (m_calendars);
+    delete m_calendars;
 }
 
 int
 CalendarListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-
-    if (!m_calendars)
-        return 0;
-
-    GValue total_results;
-    g_object_get_property (G_OBJECT (m_calendars), "total-results", &total_results);
-    return g_value_get_int (&total_results);
+    return m_calendars->length();
 }
 
 QVariant
@@ -34,12 +28,7 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
     {
-        GList * entries = gdata_feed_get_entries (m_calendars);
-        GDataEntry *entry = GDATA_ENTRY (g_list_nth_data (entries, index.row()));
-        QString displayText = gdata_entry_get_title (entry);
-        g_object_unref (entry);
-        g_object_unref (entries);
-        return displayText;
+        return m_calendars->at(index.row())->getTitle();
     }
     else
         return QVariant();
@@ -48,16 +37,22 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 void
 CalendarListModel::setCalendarList(GDataFeed *calendars)
 {
-    m_calendars = calendars;
-    g_object_ref (m_calendars);
+    qDeleteAll(m_calendars->begin(), m_calendars->end());
+    m_calendars->clear();
+
+    // Scan the list of calendars
+    GList *i;
+    for (i = gdata_feed_get_entries (calendars); i != NULL; i = i->next) {
+        qDebug() <<  "Calendar found: " << gdata_entry_get_title (GDATA_ENTRY (i->data));
+        m_calendars->append(new Calendar (NULL, GDATA_CALENDAR_CALENDAR (i->data)));
+    }
+
     reset();
 }
 
 GDataCalendarCalendar*
 CalendarListModel::getCalendar(int index)
 {
-    GList *entries = gdata_feed_get_entries (m_calendars);
-    GDataCalendarCalendar* calendar = GDATA_CALENDAR_CALENDAR (g_list_nth_data (entries, index));
-    g_object_unref (entries);
+    GDataCalendarCalendar* calendar = m_calendars->at(index)->getCalendar();
     return calendar;
 }

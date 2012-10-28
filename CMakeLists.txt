@@ -8,6 +8,7 @@ PKG_CHECK_MODULES (GDATA libgdata>=0.12 gobject-2.0 REQUIRED)
 
 SET (GoogleTimeTracker_SOURCES
 time-tracker/eventlistmodel.cpp
+time-tracker/calendar.cpp
 time-tracker/mainwindow.cpp
 time-tracker/calendarclient.cpp
 time-tracker/calendarevent.cpp
@@ -16,6 +17,7 @@ time-tracker/main.cpp
 )
 
 SET (GoogleTimeTracker_HEADERS
+time-tracker/calendar.h
 time-tracker/calendarclient.h
 time-tracker/calendarevent.h
 time-tracker/calendarlistmodel.h
@@ -35,7 +37,7 @@ QT4_WRAP_UI (GoogleTimeTracker_FORMS_HEADERS ${GoogleTimeTracker_FORMS})
 
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
-ADD_DEFINITIONS (${QT_DEFINITIONS} ${GDATA_CFLAGS})
+ADD_DEFINITIONS (${QT_DEFINITIONS} ${GDATA_CFLAGS} -g -O0)
 
 ADD_EXECUTABLE (GoogleTimeTracker 
 	${GoogleTimeTracker_SOURCES} 

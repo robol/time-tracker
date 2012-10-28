@@ -15,18 +15,9 @@ CalendarClient::CalendarClient(QObject *parent) :
     QObject(parent)
 {
     QByteArray APP_NAME_DATA = tr("Google Time Tracker").toLatin1();
-    m_authorizer = gdata_oauth1_authorizer_new (APP_NAME_DATA.data(),
-                                                GDATA_TYPE_CALENDAR_SERVICE);
+    m_authorizer = gdata_client_login_authorizer_new(APP_NAME_DATA.data(), GDATA_TYPE_CALENDAR_SERVICE);
 
-    m_token = m_token_secret = NULL;
-
-    char * authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (m_authorizer,
-                                                                                    &m_token, &m_token_secret,
-                                                                                    NULL, NULL);
-    qDebug() << "Open URL " << authentication_uri;
-    QDesktopServices::openUrl(QUrl(authentication_uri));
-
-    m_service = gdata_calendar_service_new (GDATA_AUTHORIZER (m_authorizer));
+    m_service = NULL;
 
     // Instantiate the Models that will be used by the UI
     // to make the user choose events and/or calendars.
@@ -39,16 +30,11 @@ CalendarClient::~CalendarClient()
     delete m_eventListModel;
     delete m_calendarListModel;
 
-    if (m_token)
-        g_free (m_token);
-    if (m_token_secret)
-    {
-        memset (m_token_secret, 0, strlen (m_token_secret));
-        g_free (m_token_secret);
-    }
+    if (m_service)
+        g_object_unref (m_service);
 
-    g_object_unref (m_service);
-    g_object_unref (m_authorizer);
+    if (m_authorizer)
+        g_object_unref (m_authorizer);
 }
 
 void
@@ -59,25 +45,31 @@ CalendarClient::performAuthentication()
     QByteArray username_data = m_username.toLatin1();
     QByteArray password_data = m_password.toLatin1();
 
-//    // Try to authenticate on Google Calendar, and give a warning if it does
-//    // not succeed.
-//    int result = gcal_get_authentication(m_client, username_data.data(), password_data.data());
-//    if (result != 0)
-//    {
-//        qDebug() << "Warning: Authentication failed on Google Calendar";
-//        authenticationFailed();
-//    }
-//    else
-//    {
-//        // Find the list of the calendars that the user have so we can choose
-//        // them from the ComboBox.
-//        struct gcal_resource_array *resources = new gcal_resource_array;
-//        gcal_calendar_list(m_client, resources);
+    GError *error = NULL;
+//    char * authentication_uri = gdata_client_login_authorizer_new ()
 
-//        m_calendarListModel->setCalendarList(resources);
+    gdata_client_login_authorizer_authenticate(m_authorizer, username_data.data(),
+                                               password_data.data(), NULL, &error);
 
-//        connected();
-//    }
+    if (error != NULL) {
+        qDebug() << "Error while authenticating: " << error->message;
+        authenticationFailed();
+    }
+    else {
+        qDebug() << "Successfully connected";
+        m_service = gdata_calendar_service_new (GDATA_AUTHORIZER (m_authorizer));
+        error = NULL;
+        GDataFeed *calendars = gdata_calendar_service_query_all_calendars (m_service, NULL, NULL, NULL, NULL, &error);
+
+        if (error) {
+            qDebug() << "Error while fetching calendar list: " << error->message;
+        }
+
+        m_calendarListModel->setCalendarList(calendars);
+        g_object_unref (calendars);
+
+        connected();
+    }
 }
 
 void

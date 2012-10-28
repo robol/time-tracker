@@ -62,7 +62,7 @@ void MainWindow::on_computeButton_clicked()
     for(int i = 0; i < model->rowCount(QModelIndex()); i++)
     {
         CalendarEvent* event = model->getEventAt(i);
-        // qDebug() << "Event = " << event->getTitle() << " Duration = " << event->getDuration();
+        qDebug() << "Event = " << event->getTitle() << " Duration = " << event->getDuration();
         delete event;
     }
 }

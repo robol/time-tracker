@@ -10,7 +10,7 @@
 extern "C" {
     #include <gdata/services/calendar/gdata-calendar-service.h>
     #include <gdata/gdata-authorizer.h>
-    #include <gdata/gdata-oauth1-authorizer.h>
+    #include <gdata/gdata-client-login-authorizer.h>
 }
 
 /**
@@ -67,16 +67,16 @@ private:
 
     void performAuthentication();
 
-    char * m_token;
-    char * m_token_secret;
+//    char * m_token;
+//    char * m_token_secret;
 
     QString m_username;
     QString m_password;
 
     GDataCalendarService *m_service;
 
-    GDataOAuth1Authorizer *m_authorizer;
-    // GDataClientLoginAuthorizer *m_authorizer;
+    // GDataOAuth1Authorizer *m_authorizer;
+    GDataClientLoginAuthorizer *m_authorizer;
 
     /**
      * @brief m_eventListModel is a model representing the events in the calendar
