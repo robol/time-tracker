@@ -1,3 +1,5 @@
+#define QT_NO_KEYWORDS
+
 #ifndef CALENDARCLIENT_H
 #define CALENDARCLIENT_H
 
@@ -93,7 +95,7 @@ private:
      */
     void reloadEvents();
     
-signals:
+Q_SIGNALS:
     /**
      * @brief connected signal is emitted when the client authenticates successfuly
      * against Google Calendar.
@@ -123,8 +125,6 @@ signals:
      * has finished loading the events.
      */
     void loadingEventsFinished();
-    
-public slots:
     
 };
 

@@ -8,6 +8,7 @@ extern "C" {
     #include <glib-object.h>
 }
 
+
 #define TIME_TRACKER_APPLICATION_ID "TIME_TRACKER_APPLICATION"
 
 CalendarClient::CalendarClient(QObject *parent) :

@@ -29,10 +29,6 @@ public:
 private:
     GDataFeed * m_events;
     int m_length;
-
-signals:
-    
-public slots:
     
 };
 

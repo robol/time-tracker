@@ -38,10 +38,6 @@ public:
 private:
     GDataFeed *m_calendars;
     
-signals:
-    
-public slots:
-    
 };
 
 #endif // CALENDARLISTMODEL_H

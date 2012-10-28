@@ -1,3 +1,5 @@
+#define QT_NO_KEYWORDS
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "calendarclient.h"

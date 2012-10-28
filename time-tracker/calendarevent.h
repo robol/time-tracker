@@ -52,10 +52,7 @@ public:
 private:
     GDataCalendarEvent *m_entry;
     GDataGDWhen *m_date;
-    
-signals:
-    
-public slots:
+
     
 };
 

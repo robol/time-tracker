@@ -1,3 +1,5 @@
+#define QT_NO_KEYWORDS
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -16,7 +18,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
-private slots:
+private Q_SLOTS:
     void onClientConnected();
     void onAuthenticationFailed();
     void on_computeButton_clicked();
