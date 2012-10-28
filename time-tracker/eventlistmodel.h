@@ -5,7 +5,8 @@
 #include "calendarevent.h"
 
 extern "C" {
-    #include <gcalendar.h>
+    #include <gdata/services/calendar/gdata-calendar-event.h>
+    #include <gdata/gdata-feed.h>
 }
 
 class EventListModel : public QAbstractListModel
@@ -13,7 +14,7 @@ class EventListModel : public QAbstractListModel
     Q_OBJECT
 public:
     explicit EventListModel(QObject *parent = 0);
-    void setEventsArray(gcal_event_array* array);
+    void setEventsArray(GDataFeed *events);
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
 
@@ -26,8 +27,8 @@ public:
     CalendarEvent* getEventAt(int position);
 
 private:
-    bool m_isEmpty;
-    gcal_event_array *m_events;
+    GDataFeed * m_events;
+    int m_length;
 
 signals:
     

@@ -1,13 +1,19 @@
 #include "calendarlistmodel.h"
 
+extern "C" {
+    #include "glib.h"
+}
+
 CalendarListModel::CalendarListModel(QObject *parent) :
-    QAbstractListModel(parent), isEmpty(true)
+    QAbstractListModel(parent)
 {
+    m_calendars = NULL;
 }
 
 CalendarListModel::~CalendarListModel()
 {
-    delete m_calendars;
+    if (m_calendars)
+        g_object_unref (m_calendars);
 }
 
 int
@@ -15,7 +21,7 @@ CalendarListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
 
-    if (isEmpty)
+    if (!m_calendars)
         return 0;
 
     return m_calendars->length;
@@ -35,18 +41,18 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 }
 
 void
-CalendarListModel::setCalendarList(gcal_resource_array *calendars)
+CalendarListModel::setCalendarList(GDataFeed *calendars)
 {
     m_calendars = calendars;
-    isEmpty = calendars->length == 0;
-
+    g_object_ref (m_calendars);
     reset();
 }
 
-gcal_t
+GDataCalendarCalendar*
 CalendarListModel::getCalendar(int index)
 {
-    gcal_t calendar;
-    gcal_get_calendar_by_index(m_calendars, index, &calendar);
+    GList *entries = gdata_feed_get_entries (m_calendars);
+    GDataCalendarCalendar* calendar = (GCalendarCalendar*) g_list_get_nth_data (entries, index);
+    g_object_unref (entries);
     return calendar;
 }

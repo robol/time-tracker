@@ -19,12 +19,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = GoogleTimeTracker
 TEMPLATE = app
 
-LIBS += -lgcal
-INCLUDEPATH += /usr/include/libgcal
-
-# LIBS += -L"$$_PRO_FILE_PWD_/dependencies/libgcal/build/src" -lgcal
-# INCLUDEPATH += "$$_PRO_FILE_PWD_/dependencies/libgcal/inc"
-
+CONFIG += link_pkgconfig
+PKGCONFIG += libgdata gobject-2.0
 
 SOURCES += time-tracker/main.cpp\
         time-tracker/mainwindow.cpp \

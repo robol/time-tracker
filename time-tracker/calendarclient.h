@@ -6,7 +6,9 @@
 #include "calendarlistmodel.h"
 
 extern "C" {
-    #include <gcalendar.h>
+    #include <gdata/services/calendar/gdata-calendar-service.h>
+    #include <gdata/gdata-authorizer.h>
+    #include <gdata/gdata-oauth1-authorizer.h>
 }
 
 /**
@@ -63,11 +65,15 @@ private:
 
     void performAuthentication();
 
+    char * m_token;
+    char * m_token_secret;
+
     QString m_username;
     QString m_password;
 
-    gcal_t m_client;
-    gcal_event_array m_events;
+    GDataCalendarService *m_service;
+
+    GDataOAuth1Authorizer *m_authorizer;
 
     /**
      * @brief m_eventListModel is a model representing the events in the calendar

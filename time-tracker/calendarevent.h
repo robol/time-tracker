@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QDateTime>
 extern "C" {
-    #include <gcalendar.h>
+    #include <gdata/services/calendar/gdata-calendar-event.h>
+    #include <gdata/gd/gdata-gd-when.h>
 }
 
 /**
@@ -15,7 +16,8 @@ class CalendarEvent : public QObject
 {
     Q_OBJECT
 public:
-    explicit CalendarEvent(QObject *parent = 0, gcal_event_t event = NULL);
+    explicit CalendarEvent(QObject *parent = 0, GDataCalendarEvent *event = NULL);
+    ~CalendarEvent();
 
     /**
      * @brief getTitle is the accessor for the title property of the event
@@ -46,11 +48,10 @@ public:
      */
     double getDuration();
 
-    QString getXml() { return QString (gcal_event_get_xml(m_event)); }
-
 
 private:
-    gcal_event_t m_event;
+    GDataCalendarEvent *m_entry;
+    GDataGDWhen *m_date;
     
 signals:
     

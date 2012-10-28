@@ -1,22 +1,31 @@
 #include "calendarevent.h"
 
-CalendarEvent::CalendarEvent(QObject *parent, gcal_event_t event) :
-    QObject(parent), m_event (event)
+CalendarEvent::CalendarEvent(QObject *parent, GDataCalendarEvent *entry) :
+    QObject(parent), m_entry (entry)
 {
+    m_date = NULL;
+    g_object_ref (m_entry);
+}
+
+CalendarEvent::~CalendarEvent()
+{
+    g_object_unref (m_entry);
 }
 
 QString
 CalendarEvent::getTitle()
 {
-    return QString (gcal_event_get_title(m_event));
+    return QString (gdata_entry_get_title (GDATA_ENTRY (m_entry)));
 }
 
 QDateTime
 CalendarEvent::getStart()
 {
-    const char * date_iso = gcal_event_get_start(m_event);
-    if (date_iso)
-        return QDateTime::fromString(QString(date_iso), Qt::ISODate);
+    if (!m_date)
+        gdata_calendar_event_get_primary_time (m_entry, NULL, NULL, &m_date);
+
+    if (m_date)
+        return QDateTime::fromTime_t(gdata_gd_when_get_start_time (m_date));
     else
         return QDateTime();
 }
@@ -24,9 +33,11 @@ CalendarEvent::getStart()
 QDateTime
 CalendarEvent::getEnd()
 {
-    const char * date_iso = gcal_event_get_end(m_event);
-    if (date_iso)
-        return QDateTime::fromString(QString(date_iso), Qt::ISODate);
+    if (!m_date)
+        gdata_calendar_event_get_primary_time (m_entry, NULL, NULL, &m_date);
+
+    if (m_date)
+        return QDateTime::fromTime_t(gdata_gd_when_get_end_time (m_date));
     else
         return QDateTime();
 }
