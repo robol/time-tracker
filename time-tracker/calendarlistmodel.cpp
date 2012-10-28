@@ -1,7 +1,7 @@
 #include "calendarlistmodel.h"
 
 extern "C" {
-    #include "glib.h"
+    #include <glib.h>
 }
 
 CalendarListModel::CalendarListModel(QObject *parent) :
@@ -24,7 +24,9 @@ CalendarListModel::rowCount(const QModelIndex &parent) const
     if (!m_calendars)
         return 0;
 
-    return m_calendars->length;
+    GValue total_results;
+    g_object_get_property (G_OBJECT (m_calendars), "total-results", &total_results);
+    return g_value_get_int (&total_results);
 }
 
 QVariant
@@ -32,9 +34,12 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
     {
-        gcal_t calendar;
-        gcal_get_calendar_by_index(m_calendars, index.row(), &calendar);
-        return QString (gcal_resource_get_user(calendar));
+        GList * entries = gdata_feed_get_entries (m_calendars);
+        GDataEntry *entry = GDATA_ENTRY (g_list_nth_data (entries, index.row()));
+        QString displayText = gdata_entry_get_title (entry);
+        g_object_unref (entry);
+        g_object_unref (entries);
+        return displayText;
     }
     else
         return QVariant();
@@ -52,7 +57,7 @@ GDataCalendarCalendar*
 CalendarListModel::getCalendar(int index)
 {
     GList *entries = gdata_feed_get_entries (m_calendars);
-    GDataCalendarCalendar* calendar = (GCalendarCalendar*) g_list_get_nth_data (entries, index);
+    GDataCalendarCalendar* calendar = GDATA_CALENDAR_CALENDAR (g_list_nth_data (entries, index));
     g_object_unref (entries);
     return calendar;
 }

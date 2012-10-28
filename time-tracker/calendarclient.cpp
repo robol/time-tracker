@@ -22,6 +22,7 @@ CalendarClient::CalendarClient(QObject *parent) :
     char * authentication_uri = gdata_oauth1_authorizer_request_authentication_uri (m_authorizer,
                                                                                     &m_token, &m_token_secret,
                                                                                     NULL, NULL);
+    qDebug() << "Open URL " << authentication_uri;
     QDesktopServices::openUrl(QUrl(authentication_uri));
 
     m_service = gdata_calendar_service_new (GDATA_AUTHORIZER (m_authorizer));
