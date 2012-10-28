@@ -6,6 +6,7 @@
 
 extern "C" {
     #include <glib-object.h>
+    #include <gdata/gdata-query.h>
 }
 
 
@@ -108,16 +109,31 @@ CalendarClient::reloadEvents()
 {
     loadingEventStarted();
 
+    m_eventListModel->clearEvents();
+
     GError *error = NULL;
-    GDataFeed *feed = gdata_calendar_service_query_events (m_service, m_client, NULL, NULL, NULL, NULL, &error);
 
-    if (error) {
-        qDebug() << "Error while fetching the feed of events:" << error->message;
-        return;
-    }
+    unsigned int results = 0;
+    int start_index = 0;
+    int page_size = 100;
 
-    m_eventListModel->setEventsArray(feed);
-    g_object_unref (feed);
+    do {
+        GDataQuery *query = gdata_query_new_with_limits (NULL, start_index, start_index + page_size);
+        GDataFeed *feed = gdata_calendar_service_query_events (m_service, m_client, query,
+                                                               NULL, NULL, NULL, &error);
+        results = g_list_length (gdata_feed_get_entries (feed));
+
+        if (error) {
+            qDebug() << "Error while fetching the feed of events:" << error->message;
+            return;
+        }
+        else
+            start_index += page_size;
+
+        m_eventListModel->addEvents(feed);
+        g_object_unref (feed);
+
+    } while (results == page_size);
 
     loadingEventsFinished();
 }

@@ -15,7 +15,7 @@ class EventListModel : public QAbstractListModel
     Q_OBJECT
 public:
     explicit EventListModel(QObject *parent = 0);
-    void setEventsArray(GDataFeed *events);
+    void addEvents(GDataFeed *events);
     int rowCount(const QModelIndex &parent) const;
     QVariant data(const QModelIndex &index, int role) const;
 
@@ -26,6 +26,8 @@ public:
      * @return A pointer to an
      */
     CalendarEvent* getEventAt(int position);
+
+    void clearEvents();
 
 private:
     QList<CalendarEvent*> * m_events;

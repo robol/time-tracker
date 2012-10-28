@@ -10,11 +10,15 @@ EventListModel::EventListModel(QObject *parent) :
 }
 
 void
-EventListModel::setEventsArray(GDataFeed *array)
+EventListModel::clearEvents()
 {
     qDeleteAll(m_events->begin(), m_events->end());
     m_events->clear();
+}
 
+void
+EventListModel::addEvents(GDataFeed *array)
+{
     GList *i;
     for (i = gdata_feed_get_entries (array); i != NULL; i = i->next) {
         m_events->append(new CalendarEvent (NULL, GDATA_CALENDAR_EVENT (i->data)));
