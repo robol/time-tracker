@@ -2,6 +2,7 @@
 #define EVENTLISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QList>
 #include "calendarevent.h"
 
 extern "C" {
@@ -27,7 +28,7 @@ public:
     CalendarEvent* getEventAt(int position);
 
 private:
-    GDataFeed * m_events;
+    QList<CalendarEvent*> * m_events;
     int m_length;
     
 };

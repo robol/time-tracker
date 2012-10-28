@@ -99,7 +99,7 @@ CalendarClient::getCalendarsModel()
 void
 CalendarClient::selectCalendar(int index)
 {
-//    m_client = m_calendarListModel->getCalendar(index);
+    m_client = m_calendarListModel->getCalendar(index);
     QtConcurrent::run(this, &CalendarClient::reloadEvents);
 }
 
@@ -107,7 +107,17 @@ void
 CalendarClient::reloadEvents()
 {
     loadingEventStarted();
-//    gcal_get_events(m_client, &m_events);
-//    m_eventListModel->setEventsArray(&m_events);
+
+    GError *error = NULL;
+    GDataFeed *feed = gdata_calendar_service_query_events (m_service, m_client, NULL, NULL, NULL, NULL, &error);
+
+    if (error) {
+        qDebug() << "Error while fetching the feed of events:" << error->message;
+        return;
+    }
+
+    m_eventListModel->setEventsArray(feed);
+    g_object_unref (feed);
+
     loadingEventsFinished();
 }

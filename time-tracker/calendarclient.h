@@ -78,6 +78,8 @@ private:
     // GDataOAuth1Authorizer *m_authorizer;
     GDataClientLoginAuthorizer *m_authorizer;
 
+    GDataCalendarCalendar *m_client;
+
     /**
      * @brief m_eventListModel is a model representing the events in the calendar
      * currently selected.

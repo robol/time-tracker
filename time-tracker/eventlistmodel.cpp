@@ -6,15 +6,21 @@ extern "C" {
 EventListModel::EventListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_events = NULL;
-    reset();
+    m_events = new QList<CalendarEvent*>();
 }
 
 void
 EventListModel::setEventsArray(GDataFeed *array)
 {
-    m_events = array;
-    m_length = (array) ? g_list_length (gdata_feed_get_entries (m_events)) : 0;
+    qDeleteAll(m_events->begin(), m_events->end());
+    m_events->clear();
+
+    GList *i;
+    for (i = gdata_feed_get_entries (array); i != NULL; i = i->next) {
+        m_events->append(new CalendarEvent (NULL, GDATA_CALENDAR_EVENT (i->data)));
+    }
+
+    m_length = m_events->length();
 
     // Fill the data in the model to respect
     reset();
@@ -32,10 +38,7 @@ EventListModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
     {
-        GDataEntry *entry = (GDataEntry*) g_list_nth_data ((GList*) m_events, index.row());
-        QString title = gdata_entry_get_title (entry);
-        g_object_unref (entry);
-        return title;
+        return m_events->at(index.row())->getTitle();
     }
     else
         return QVariant();
@@ -44,7 +47,5 @@ EventListModel::data(const QModelIndex &index, int role) const
 CalendarEvent*
 EventListModel::getEventAt(int position)
 {
-    GDataCalendarEvent *entry = (GDataCalendarEvent*) g_list_nth_data ((GList*) m_events, position);
-    g_object_unref (entry);
-    return new CalendarEvent(this, entry);
+    return m_events->at(position);
 }
