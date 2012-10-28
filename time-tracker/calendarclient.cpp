@@ -85,9 +85,6 @@ CalendarClient::setAuthenticationData(QString username, QString password)
 EventListModel*
 CalendarClient::getEventsModel()
 {
-//    gdata_calendar_service_query_events(m_service, m_calendarListModel->getCalendar())
-//    m_eventListModel->setEventsArray(&m_events);
-
     return m_eventListModel;
 }
 

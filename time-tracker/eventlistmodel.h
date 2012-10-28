@@ -31,7 +31,6 @@ public:
 
 private:
     QList<CalendarEvent*> * m_events;
-    int m_length;
     
 };
 

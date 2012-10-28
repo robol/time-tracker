@@ -24,8 +24,6 @@ EventListModel::addEvents(GDataFeed *array)
         m_events->append(new CalendarEvent (NULL, GDATA_CALENDAR_EVENT (i->data)));
     }
 
-    m_length = m_events->length();
-
     // Fill the data in the model to respect
     reset();
 }
@@ -34,7 +32,7 @@ int
 EventListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_length;
+    return m_events->length ();
 }
 
 QVariant
