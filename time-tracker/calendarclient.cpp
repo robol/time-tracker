@@ -15,6 +15,9 @@ extern "C" {
 CalendarClient::CalendarClient(QObject *parent) :
     QObject(parent)
 {
+    // Init GType system
+    g_type_init ();
+
     QByteArray APP_NAME_DATA = tr("Google Time Tracker").toLatin1();
     m_authorizer = gdata_client_login_authorizer_new(APP_NAME_DATA.data(), GDATA_TYPE_CALENDAR_SERVICE);
 
