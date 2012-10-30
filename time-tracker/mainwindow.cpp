@@ -35,7 +35,6 @@ void
 MainWindow::onClientConnected()
 {
     ui->statusBar->showMessage(tr("Connected to Google Calendar"));
-    ui->computeButton->setDisabled(false);
 }
 
 void MainWindow::onAuthenticationFailed()
@@ -83,4 +82,5 @@ void MainWindow::clientLoadingEventsStarted()
 void MainWindow::clientLoadingEventsFinished()
 {
     ui->statusBar->showMessage(tr("Downloading events completed"));
+    ui->computeButton->setDisabled(false);
 }

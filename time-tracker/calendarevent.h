@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QDateTime>
+#include <QMap>
+#include <QVariant>
 
 /**
  * @brief The CalendarEvent class is wrapper around gcal_event_t objects.
@@ -12,7 +14,7 @@ class CalendarEvent : public QObject
 {
     Q_OBJECT
 public:
-    explicit CalendarEvent(QObject *parent = 0);
+    explicit CalendarEvent(QObject *parent, QMap<QString, QVariant> eventData);
     ~CalendarEvent();
 
     /**
@@ -46,7 +48,7 @@ public:
 
 
 private:
-
+    QMap<QString, QVariant> m_eventData;
     
 };
 

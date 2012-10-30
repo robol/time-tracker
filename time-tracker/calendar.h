@@ -3,19 +3,15 @@
 
 #include <QObject>
 #include <QList>
+#include <QMap>
+#include <QVariant>
 
 class Calendar : public QObject
 {
     Q_OBJECT
 public:
-    explicit Calendar(QObject *parent);
+    explicit Calendar(QObject *parent, QMap<QString, QVariant> calendar_data);
     ~Calendar();
-
-    /**
-     * @brief getCalendar Return the libgdata calendar object stored inside this wrapper.
-     * @return A pointer to the GDataCalendarCalendar gobject.
-     */
-    // GDataCalendarCalendar *getCalendar();
 
     /**
      * @brief getTitle is the accessor method for the Title of the calendar.
@@ -23,7 +19,15 @@ public:
      */
     QString getTitle();
 
+    /**
+     * @brief getId can be used to access the identifier of the calendar
+     * inside Google Calendar.
+     * @return A string with the requested id.
+     */
+    QString getId();
+
 private:
+    QMap<QString, QVariant> m_calendarData;
     
 };
 

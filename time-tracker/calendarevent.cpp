@@ -1,9 +1,8 @@
 #include "calendarevent.h"
 
-CalendarEvent::CalendarEvent(QObject *parent) :
-    QObject(parent)
+CalendarEvent::CalendarEvent(QObject *parent, QMap<QString, QVariant> eventData) :
+    QObject(parent), m_eventData(eventData)
 {
-
 }
 
 CalendarEvent::~CalendarEvent()
@@ -13,7 +12,7 @@ CalendarEvent::~CalendarEvent()
 QString
 CalendarEvent::getTitle()
 {
-    return "";
+    return m_eventData["summary"].toString();
 }
 
 QDateTime

@@ -3,20 +3,19 @@
 EventListModel::EventListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_events = new QList<CalendarEvent*>();
 }
 
 void
 EventListModel::clearEvents()
 {
-    qDeleteAll(m_events->begin(), m_events->end());
-    m_events->clear();
+    qDeleteAll(m_events.begin(), m_events.end());
+    m_events.clear();
 }
 
 void
-EventListModel::addEvents()
+EventListModel::setEventList(QList<CalendarEvent *> events)
 {
-    // Fill the data in the model to respect
+    m_events = events;
     reset();
 }
 
@@ -24,7 +23,7 @@ int
 EventListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_events->length ();
+    return m_events.length ();
 }
 
 QVariant
@@ -32,7 +31,7 @@ EventListModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
     {
-        return m_events->at(index.row())->getTitle();
+        return m_events.at(index.row())->getTitle();
     }
     else
         return QVariant();
@@ -41,5 +40,5 @@ EventListModel::data(const QModelIndex &index, int role) const
 CalendarEvent*
 EventListModel::getEventAt(int position)
 {
-    return m_events->at(position);
+    return m_events.at(position);
 }

@@ -32,19 +32,20 @@ public:
 
     /**
      * @brief setCalendarList can be used to set the current list of calendars available.
-     * @param calendars The array structure obtained by a call to gcal_calendar_list().
+     * @param calendars The list of points to Calendar* objects representing the user
+     * calendars.
      */
-    void setCalendarList();
+    void setCalendarList(QList<Calendar*> calendars);
 
     /**
      * @brief getCalendar returns the gcal_t object associated with a given QModelIndex
      * @param index the Index in the Model where the calendar is placed.
      * @return The gcal_t object, i.e., the opaque pointer to the gcal_resource structure.
      */
-//    GDataCalendarCalendar* getCalendar(int index);
+    Calendar* getCalendar(int index);
 
 private:
-    QList<Calendar*> *m_calendars;
+    QList<Calendar*> m_calendars;
     
 };
 

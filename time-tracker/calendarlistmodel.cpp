@@ -4,19 +4,17 @@
 CalendarListModel::CalendarListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
-    m_calendars = new QList<Calendar*>();
 }
 
 CalendarListModel::~CalendarListModel()
 {
-    delete m_calendars;
 }
 
 int
 CalendarListModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_calendars->length();
+    return m_calendars.length();
 }
 
 QVariant
@@ -24,24 +22,26 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 {
     if (role == Qt::DisplayRole)
     {
-        return m_calendars->at(index.row())->getTitle();
+        return m_calendars.at(index.row())->getTitle();
     }
     else
         return QVariant();
 }
 
 void
-CalendarListModel::setCalendarList()
+CalendarListModel::setCalendarList(QList<Calendar*> calendars)
 {
-    qDeleteAll(m_calendars->begin(), m_calendars->end());
-    m_calendars->clear();
+    // Remove calendars that were already in the list, if any.
+    qDeleteAll(m_calendars.begin(), m_calendars.end());
+    m_calendars.clear();
+
+    m_calendars = calendars;
 
     reset();
 }
 
-//GDataCalendarCalendar*
-//CalendarListModel::getCalendar(int index)
-//{
-//    GDataCalendarCalendar* calendar = m_calendars->at(index)->getCalendar();
-//    return calendar;
-//}
+Calendar*
+CalendarListModel::getCalendar(int index)
+{
+    return m_calendars.at(index);
+}

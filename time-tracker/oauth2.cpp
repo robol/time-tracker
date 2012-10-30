@@ -49,7 +49,7 @@ void OAuth2::replyReadyRead()
 
     m_strAccessToken = result["access_token"].toString();
 
-    QSettings settings("ICS", "Google API Calendar Client");
+    QSettings settings("it.robol", "TimeTracker");
     settings.setValue("access_token", m_strAccessToken);
     m_pLoginDialog->setLoginUrl("");
     emit loginDone();
@@ -102,7 +102,7 @@ bool OAuth2::isAuthorized()
 void OAuth2::startLogin(bool bForce)
 {
     qDebug() << "OAuth2::startLogin";
-    QSettings settings("ICS", "Google API Calendar Client");
+    QSettings settings("it.robol", "TimeTracker");
     QString str = settings.value("access_token", "").toString();
 
     qDebug() << "OAuth2::startLogin, token from Settings" << str;

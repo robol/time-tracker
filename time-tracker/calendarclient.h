@@ -5,6 +5,7 @@
 #include "eventlistmodel.h"
 #include "calendarlistmodel.h"
 #include "oauth2.h"
+#include "calendar_data_manager.h"
 
 /**
  * @brief The CalendarClient class is aimed to provide a simple interface
@@ -70,6 +71,12 @@ private:
     OAuth2 m_oauth2;
 
     /**
+     * @brief m_calendarDataManager is the object used to retrieve data about
+     * user calendars.
+     */
+    CalendarDataManager m_calendarDataManager;
+
+    /**
      * @brief m_eventListModel is a model representing the events in the calendar
      * currently selected.
      */
@@ -79,6 +86,11 @@ private:
      * @brief m_calendarListModel is a model representing the calendars of the user.
      */
     CalendarListModel* m_calendarListModel;
+
+    /**
+     * @brief m_activeCalendar is the currently selected calendar.
+     */
+    Calendar* m_activeCalendar;
 
     /**
      * @brief reloadEvents reload asynchronously the events from the currently selected
@@ -116,6 +128,24 @@ signals:
      * has finished loading the events.
      */
     void loadingEventsFinished();
+
+private slots:
+    /**
+     * @brief onLoginDone perform the necessary actions needed after a succesful
+     * login. In particular, the list of calendars inside m_calendarListModel is
+     * refreshed.
+     */
+    void onLoginDone();
+
+    /**
+     * @brief reloadCalendarList reload the list of calendars inside the m_calendarListModel.
+     */
+    void reloadCalendarList();
+
+    /**
+     * @brief reloadEventsList reload the list of events insde the m_eventListModel.
+     */
+    void reloadEventList();
     
 };
 

@@ -12,12 +12,10 @@ public:
     explicit EventListModel(QObject *parent = 0);
 
     /**
-     * @brief addEvents Add events to the model. Can be called while retrieving
-     *                  these from Google Calendar.
-     * @param events The GDataFeed points obtained by a call to
-     *               gdata_calendar_service_query_events().
+     * @brief setEventList set the internal list of events for the model.
+     * @param events A QList of Events*.
      */
-    void addEvents();
+    void setEventList(QList<CalendarEvent *> events);
 
     /**
      * @brief rowCount counts the total number of elements in the Model.
@@ -50,7 +48,7 @@ public:
     void clearEvents();
 
 private:
-    QList<CalendarEvent*> * m_events;
+    QList<CalendarEvent*> m_events;
     
 };
 

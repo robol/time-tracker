@@ -1,7 +1,7 @@
 #include "calendar.h"
 
-Calendar::Calendar(QObject *parent) :
-    QObject(parent)
+Calendar::Calendar(QObject *parent, QMap<QString, QVariant> calendarData) :
+    QObject(parent), m_calendarData(calendarData)
 {
 }
 
@@ -9,14 +9,14 @@ Calendar::~Calendar()
 {
 }
 
-//GDataCalendarCalendar*
-//Calendar::getCalendar()
-//{
-//    return m_calendar;
-//}
+QString
+Calendar::getId()
+{
+    return m_calendarData["id"].toString();
+}
 
 QString
 Calendar::getTitle()
 {
-    return "";
+    return m_calendarData["summary"].toString();
 }
