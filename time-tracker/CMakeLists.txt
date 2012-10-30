@@ -1,4 +1,7 @@
 SET (timetracker_SOURCES
+logindialog.cpp
+oauth2.cpp
+calendar_data_manager.cpp
 eventlistmodel.cpp
 calendar.cpp
 mainwindow.cpp
@@ -9,6 +12,9 @@ main.cpp
 )
 
 SET (timetracker_HEADERS
+logindialog.h
+oauth2.h
+calendar_data_manager.h
 calendar.h
 calendarclient.h
 calendarevent.h
@@ -19,6 +25,7 @@ mainwindow.h
 
 SET (timetracker_FORMS
 mainwindow.ui
+logindialog.ui
 )
 
 QT4_WRAP_CPP (timetracker_HEADERS_MOC
@@ -29,13 +36,13 @@ QT4_WRAP_UI (timetracker_FORMS_HEADERS ${timetracker_FORMS})
 
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
-ADD_DEFINITIONS (${QT_DEFINITIONS} ${GDATA_CFLAGS})
+ADD_DEFINITIONS (${QT_DEFINITIONS})
 
 ADD_EXECUTABLE (timetracker
         ${timetracker_SOURCES}
         ${timetracker_HEADERS_MOC}
         ${timetracker_FORMS_HEADERS})
-TARGET_LINK_LIBRARIES (timetracker ${QT_LIBRARIES} ${GDATA_LDFLAGS} ${GDATA_LIBRARIES}
+TARGET_LINK_LIBRARIES (timetracker ${QT_LIBRARIES} -lqjson
         -I${CMAKE_SOURCE_DIR}/time-tracker)
 
 INSTALL (TARGETS timetracker

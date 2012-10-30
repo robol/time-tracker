@@ -1,17 +1,10 @@
-#define QT_NO_KEYWORDS
-
 #ifndef CALENDARCLIENT_H
 #define CALENDARCLIENT_H
 
 #include <QObject>
 #include "eventlistmodel.h"
 #include "calendarlistmodel.h"
-
-extern "C" {
-    #include <gdata/services/calendar/gdata-calendar-service.h>
-    #include <gdata/gdata-authorizer.h>
-    #include <gdata/gdata-client-login-authorizer.h>
-}
+#include "oauth2.h"
 
 /**
  * @brief The CalendarClient class is aimed to provide a simple interface
@@ -23,20 +16,6 @@ class CalendarClient : public QObject
 public:
     explicit CalendarClient(QObject *parent = 0);
     ~CalendarClient();
-
-    /**
-     * @brief setAuthenticationData can be used to select username and
-     * password for the authentication step that will be required when
-     * connecting to Google Calendar service.
-     *
-     * Please note that this function is asynchronous and the signals
-     * connected() or authenticationFailed() will be emitted
-     * based on the result of the authentication process.
-     *
-     * @param username The username that shall be used for the connection
-     * @param password The password that shall be used for the connection
-     */
-    void setAuthenticationData(QString username, QString password);
 
     /**
      * @brief getEventsModel returns a Model representing the Events of the
@@ -63,16 +42,13 @@ public:
      */
     void selectCalendar(int index);
 
-private:
-
     /**
-     * @brief performAuthentication, as the name suggests, perform the hard work
-     * behind the authentication process once that setAuthenticationData() has been called.
-     * Please note that a call to the latter routine will automatically trigger a call
-     * to performAuthentication in a background thread, so there is no reason for calling
-     * this method directly.
+     * @brief performAuthentication, as the name suggests, ask the user with a login
+     * dialog to perform authentication against Google servers using OAuth2.
      */
     void performAuthentication();
+
+private:
 
     /**
      * @brief m_username The username provided by the user. Please note that these
@@ -89,22 +65,9 @@ private:
     QString m_password;
 
     /**
-     * @brief m_service is used to retrieve data from the Google servers.
+     * @brief m_oauth2 is the current OAuth2 implementation.
      */
-    GDataCalendarService *m_service;
-
-    // GDataOAuth1Authorizer *m_authorizer;
-    /**
-     * @brief m_authorizer The authorizer used to perform authentication. While this is
-     * now a GDataClientLoginAuthorizer, a migration to the use of GDataOAuth1Authorizer
-     * could be evaluted in the future.
-     */
-    GDataClientLoginAuthorizer *m_authorizer;
-
-    /**
-     * @brief m_client is a pointer to the user selected calendar.
-     */
-    GDataCalendarCalendar *m_client;
+    OAuth2 m_oauth2;
 
     /**
      * @brief m_eventListModel is a model representing the events in the calendar
@@ -123,7 +86,7 @@ private:
      */
     void reloadEvents();
     
-Q_SIGNALS:
+signals:
     /**
      * @brief connected signal is emitted when the client authenticates successfuly
      * against Google Calendar.

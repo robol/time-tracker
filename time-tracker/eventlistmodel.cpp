@@ -1,9 +1,5 @@
 #include "eventlistmodel.h"
 
-extern "C" {
-    #include <glib.h>
-}
-
 EventListModel::EventListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -18,13 +14,8 @@ EventListModel::clearEvents()
 }
 
 void
-EventListModel::addEvents(GDataFeed *array)
+EventListModel::addEvents()
 {
-    GList *i;
-    for (i = gdata_feed_get_entries (array); i != NULL; i = i->next) {
-        m_events->append(new CalendarEvent (NULL, GDATA_CALENDAR_EVENT (i->data)));
-    }
-
     // Fill the data in the model to respect
     reset();
 }

@@ -3,10 +3,6 @@
 
 #include <QObject>
 #include <QDateTime>
-extern "C" {
-    #include <gdata/services/calendar/gdata-calendar-event.h>
-    #include <gdata/gd/gdata-gd-when.h>
-}
 
 /**
  * @brief The CalendarEvent class is wrapper around gcal_event_t objects.
@@ -16,7 +12,7 @@ class CalendarEvent : public QObject
 {
     Q_OBJECT
 public:
-    explicit CalendarEvent(QObject *parent = 0, GDataCalendarEvent *event = NULL);
+    explicit CalendarEvent(QObject *parent = 0);
     ~CalendarEvent();
 
     /**
@@ -50,8 +46,6 @@ public:
 
 
 private:
-    GDataCalendarEvent *m_entry;
-    GDataGDWhen *m_date;
 
     
 };

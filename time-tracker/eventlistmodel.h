@@ -5,11 +5,6 @@
 #include <QList>
 #include "calendarevent.h"
 
-extern "C" {
-    #include <gdata/services/calendar/gdata-calendar-event.h>
-    #include <gdata/gdata-feed.h>
-}
-
 class EventListModel : public QAbstractListModel
 {
     Q_OBJECT
@@ -22,7 +17,7 @@ public:
      * @param events The GDataFeed points obtained by a call to
      *               gdata_calendar_service_query_events().
      */
-    void addEvents(GDataFeed *events);
+    void addEvents();
 
     /**
      * @brief rowCount counts the total number of elements in the Model.

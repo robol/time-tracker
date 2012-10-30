@@ -1,5 +1,3 @@
-#define QT_NO_KEYWORDS
-
 #include <QApplication>
 #include "mainwindow.h"
 

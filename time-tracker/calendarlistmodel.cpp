@@ -1,10 +1,6 @@
 #include "calendarlistmodel.h"
 #include <QDebug>
 
-extern "C" {
-    #include <glib.h>
-}
-
 CalendarListModel::CalendarListModel(QObject *parent) :
     QAbstractListModel(parent)
 {
@@ -35,24 +31,17 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 }
 
 void
-CalendarListModel::setCalendarList(GDataFeed *calendars)
+CalendarListModel::setCalendarList()
 {
     qDeleteAll(m_calendars->begin(), m_calendars->end());
     m_calendars->clear();
 
-    // Scan the list of calendars
-    GList *i;
-    for (i = gdata_feed_get_entries (calendars); i != NULL; i = i->next) {
-        qDebug() <<  "Calendar found: " << gdata_entry_get_title (GDATA_ENTRY (i->data));
-        m_calendars->append(new Calendar (NULL, GDATA_CALENDAR_CALENDAR (i->data)));
-    }
-
     reset();
 }
 
-GDataCalendarCalendar*
-CalendarListModel::getCalendar(int index)
-{
-    GDataCalendarCalendar* calendar = m_calendars->at(index)->getCalendar();
-    return calendar;
-}
+//GDataCalendarCalendar*
+//CalendarListModel::getCalendar(int index)
+//{
+//    GDataCalendarCalendar* calendar = m_calendars->at(index)->getCalendar();
+//    return calendar;
+//}

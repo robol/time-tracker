@@ -1,5 +1,3 @@
-#define QT_NO_KEYWORDS
-
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "calendarclient.h"
@@ -69,8 +67,7 @@ void MainWindow::on_computeButton_clicked()
 
 void MainWindow::on_connectPushButton_clicked()
 {
-    m_client->setAuthenticationData(ui->usernameLineEdit->text(),
-                                    ui->passwordLineEdit->text());
+    m_client->performAuthentication();
 }
 
 void MainWindow::on_calendarComboBox_currentIndexChanged(int index)
