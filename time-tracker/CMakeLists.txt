@@ -42,8 +42,13 @@ ADD_EXECUTABLE (timetracker
         ${timetracker_SOURCES}
         ${timetracker_HEADERS_MOC}
         ${timetracker_FORMS_HEADERS})
+
+IF(WIN32)
+  SET(ADDITIONAL_LDFLAGS -mwindows)
+ENDIF(WIN32)
+
 TARGET_LINK_LIBRARIES (timetracker ${QT_LIBRARIES} -lqjson
-        -I${CMAKE_SOURCE_DIR}/time-tracker)
+        -I${CMAKE_SOURCE_DIR}/time-tracker ${ADDITIONAL_LDFLAGS})
 
 INSTALL (TARGETS timetracker
   ARCHIVE DESTINATION lib

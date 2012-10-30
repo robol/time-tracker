@@ -77,7 +77,6 @@ void OAuth2::accessTokenObtained()
 
     m_networkReply = m_networkAccessManager.post(request, data);
     connect (m_networkReply, SIGNAL(readyRead()), this, SLOT(replyReadyRead()));
-
 }
 
 
