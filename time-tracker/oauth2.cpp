@@ -107,29 +107,11 @@ void OAuth2::startLogin(bool bForce)
 
     qDebug() << "OAuth2::startLogin, token from Settings" << str;
 
-    if(m_strClientID == "YOUR_CLIENT_" || 
-       m_strRedirectURI == "ASAS")
+    if(str.isEmpty() || bForce)
     {
-        QMessageBox::warning(m_pParent, "Warning",
-                             "To work with application you need to register your own application in <b>Google</b>.\n"
-                             "Learn more from <a href='http://code.google.com/p/qt-google-calendar/wiki/HowToRegisterYourApplicationInGoogle'>here</a>");
-        return;
-    }
-
-
-    if(str.isEmpty() || bForce || true)
-    {
-        //LoginDialog* dlg = new LoginDialog(parent);
-        //m_pLoginDialog->setParent(parent);
         m_pLoginDialog->setLoginUrl(loginUrl());
         m_pLoginDialog->show();
-//        int res = dlg.exec();
-//        if(res == QDialog::Accepted)
-//        {
-//            m_strAccessToken = dlg.accessToken();
-//            settings.setValue("access_token", m_strAccessToken);
-//            emit loginDone();
-//        }
+
     }
     else
     {
