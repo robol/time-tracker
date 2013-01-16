@@ -7,9 +7,6 @@
 #include <QNetworkReply>
 #include <QDateTime>
 
-#define OAUTH2_ORGANIZATION "it.robol"
-#define OAUTH2_APPLICATION  "TimeTracker"
-
 class LoginDialog;
 
 class OAuth2 : public QObject

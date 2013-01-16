@@ -9,6 +9,7 @@ calendarclient.cpp
 calendarevent.cpp
 calendarlistmodel.cpp
 main.cpp
+settings.cpp
 )
 
 SET (timetracker_HEADERS
@@ -21,6 +22,7 @@ calendarevent.h
 calendarlistmodel.h
 eventlistmodel.h
 mainwindow.h
+settings.h
 )
 
 SET (timetracker_FORMS

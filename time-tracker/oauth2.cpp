@@ -2,13 +2,13 @@
 #include <QDebug>
 #include <QApplication>
 #include "logindialog.h"
-#include <QSettings>
 #include <QMessageBox>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDateTime>
 #include <qjson/parser.h>
+#include "settings.h"
 
 OAuth2::OAuth2(QWidget* parent)
 {
@@ -68,7 +68,7 @@ void OAuth2::setAccessToken(QString accessToken, QDateTime expireDate, QString r
     qDebug() << "The token will expire on" << expireDate;
 
     // Save the token and the expire date in the settings.
-    QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
+    Settings settings;
     settings.setValue("accessToken", accessToken);
     settings.setValue("accessTokenExpireDate", expireDate);
 
@@ -106,7 +106,7 @@ void OAuth2::requestAccessToken(QString authorizationToken)
 void
 OAuth2::retrieveAccessToken()
 {
-    QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
+    Settings settings;
 
     // Dump the content of the settings so we can debug what's
     // really happening.
@@ -152,7 +152,7 @@ QString OAuth2::loginUrl()
 
 QString OAuth2::accessToken()
 {
-    QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
+    Settings settings;
     QString currentAccessToken = settings.value("accessToken").toString();
     QDateTime expireDate = settings.value("accessTokenExpireDate").toDateTime();
 
@@ -171,7 +171,7 @@ QString OAuth2::accessToken()
 
 bool OAuth2::isAuthorized()
 {
-    QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
+    Settings settings;
     return !settings.value("accessToken").toString().isEmpty() &&
             (QDateTime::currentDateTimeUtc() < settings.value("accessTokenExpireDate").toDateTime());
 }

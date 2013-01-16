@@ -29,12 +29,11 @@ CalendarEvent::getStart()
 QDateTime
 CalendarEvent::getEnd()
 {
-
     QMap<QString,QVariant> end = m_eventData["end"].toMap();
     if (end.contains("dateTime"))
          return end["dateTime"].toDateTime();
     else
-         return end["date"].toDateTime().addSecs(3600 * 8);
+         return end["date"].toDateTime().addSecs(3600 * 19);
 }
 
 double
