@@ -5,6 +5,10 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QDateTime>
+
+#define OAUTH2_ORGANIZATION "it.robol"
+#define OAUTH2_APPLICATION  "TimeTracker"
 
 class LoginDialog;
 
@@ -24,14 +28,44 @@ signals:
     void loginDone();
 
 private slots:
-    void accessTokenObtained();
-    void replyReadyRead();
+    void analyzeReply(QNetworkReply *reply);
+    void authorizationTokenObtained();
 
 private:
 
-    QString m_strAccessToken;
+    /**
+     * @brief retrieveAccessToken is used to retrieve a new access token based on
+     * a previously obtained refresh_token, or on the base authorizationToken.
+     */
+    void retrieveAccessToken();
+
+    /**
+     * @brief setAccessToken select the current valid access token that can be used
+     * to interact with the OAuth 2.0 provider.
+     * @param accessToken is a string representing the access token.
+     * @param expireDate is the expire date of the token.
+     */
+    void setAccessToken(QString accessToken, QDateTime expireDate);
+
+    /**
+     * @brief requestAccessToken asks the OAuth 2.0 server for an access token
+     * using the given authorizationToken.
+     * @param authorizationToken obtained by permission of the user using the loginDialog.
+     */
+    void requestAccessToken(QString authorizationToken);
+
+    /**
+     * @brief requestAccessToken asks the OAuth 2.0 server for an access token
+     * using the stored refreshToken in the settings. If the calls fails
+     * this use the fallback case of requestAccessToken();
+     */
+    void refreshAccessToken();
+
+    QString m_refreshToken;
+    QString m_accessToken;
+    QDateTime m_accessTokenExpireDate;
+
     QNetworkAccessManager m_networkAccessManager;
-    QNetworkReply *m_networkReply;
 
     QString m_strEndPoint;
     QString m_strScope;
