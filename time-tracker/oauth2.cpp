@@ -44,37 +44,36 @@ OAuth2::analyzeReply(QNetworkReply *reply)
     }
 
     // Check for an access token in the response. If that is present, load
-    // it with the associated expire date.
+    // it with the associated expire date. If a refresh token was present
+    // store also that.
     if (result.contains("access_token"))
     {
-        setAccessToken(result["access_token"].toString(),
-                       QDateTime::currentDateTimeUtc().addSecs(result["expires_in"].toInt()));
-    }
+        QString refreshToken = "";
 
-    // Check if we are also given a refresh token that can be used to refresh
-    // this one when expires.
-    if (result.contains("refresh_token"))
-    {
-        qDebug() << "Saving refresh token =" << result["refresh_token"].toString();
-        m_refreshToken = result["refresh_token"].toString();
+        if (result.contains("refresh_token"))
+            refreshToken = result["refresh_token"].toString();
+
+        setAccessToken(result["access_token"].toString(),
+                       QDateTime::currentDateTimeUtc().addSecs(result["expires_in"].toInt()),
+                       refreshToken);
     }
 
     // Schedule the QNetworkReply for deletion as soon as possible.
     reply->deleteLater();
 }
 
-void OAuth2::setAccessToken(QString accessToken, QDateTime expireDate)
+void OAuth2::setAccessToken(QString accessToken, QDateTime expireDate, QString refreshToken)
 {
-    qDebug() << "Registering a new access token =" << accessToken;
+    qDebug() << "Registering a new access token:" << accessToken;
     qDebug() << "The token will expire on" << expireDate;
-
-    m_accessToken = accessToken;
-    m_accessTokenExpireDate = expireDate;
 
     // Save the token and the expire date in the settings.
     QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
     settings.setValue("accessToken", accessToken);
     settings.setValue("accessTokenExpireDate", expireDate);
+
+    if (!refreshToken.isEmpty())
+        settings.setValue("refreshToken", refreshToken);
 
     // Complete the login process, if any
     m_pLoginDialog->setLoginUrl("");
@@ -90,7 +89,7 @@ void OAuth2::authorizationTokenObtained()
 
 void OAuth2::requestAccessToken(QString authorizationToken)
 {
-    QNetworkRequest request(QUrl(m_strEndPoint));
+    QNetworkRequest request(QUrl("https://accounts.google.com/o/oauth2/token"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
     QUrl params;
@@ -109,29 +108,25 @@ OAuth2::retrieveAccessToken()
 {
     QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
 
-    // Check if the current stored access token is valid. If that's
-    // the case, there is no need to do anything.
-    QDateTime m_accessTokenExpireDate = settings.value("accessTokenExpireDate").toDateTime();
-    if (QDateTime::currentDateTimeUtc() < m_accessTokenExpireDate)
-    {
-        qDebug() << "Found a valid token in the settings, using it";
-        setAccessToken(settings.value("accessToken").toString(), m_accessTokenExpireDate);
-        return;
-    }
+    // Dump the content of the settings so we can debug what's
+    // really happening.
+    qDebug() << "accessTokenExpireDate:" << settings.value("accessTokenExpireDate");
+    qDebug() << "accessToken" << settings.value("accessToken");
+    qDebug() << "refreshToken" << settings.value("refreshToken");
 
-    if (settings.contains("refresh_token") && !settings.value("refresh_token").toString().isEmpty())
+    if (!settings.value("refreshToken", "").toString().isEmpty())
     {
         qDebug() << "Trying to refresh the token";
-        m_refreshToken = settings.value("refresh_token", "").toString();
+        QString currentRefreshToken = settings.value("refreshToken", "").toString();
 
         // Perform the actual refresh of the token
-        QNetworkRequest request(QUrl(m_strEndPoint));
+        QNetworkRequest request(QUrl("https://accounts.google.com/o/oauth2/token"));
         request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
         QUrl params;
         params.addQueryItem("client_id", m_strClientID);
         params.addQueryItem("client_secret", "XCsFiCzFxaudjU56S54pTKUN");
-        params.addQueryItem("refresh_token", m_refreshToken);
+        params.addQueryItem("refresh_token", currentRefreshToken);
         params.addQueryItem("grant_type", "refresh_token");
 
         qDebug() << "Query = " << params.encodedQuery();
@@ -157,12 +152,16 @@ QString OAuth2::loginUrl()
 
 QString OAuth2::accessToken()
 {
-    if (QDateTime::currentDateTimeUtc() < m_accessTokenExpireDate)
-        return m_accessToken;
+    QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
+    QString currentAccessToken = settings.value("accessToken").toString();
+    QDateTime expireDate = settings.value("accessTokenExpireDate").toDateTime();
+
+    if (QDateTime::currentDateTimeUtc() < expireDate)
+        return currentAccessToken;
     else
     {
         qDebug() << "The token has expired";
-        m_accessToken = "";
+        settings.setValue("accessToken", "");
 
         // Try to refresh the token using a refresh token, if it does exists,
         // or by retriggering the authentication process if it does not.
@@ -172,7 +171,9 @@ QString OAuth2::accessToken()
 
 bool OAuth2::isAuthorized()
 {
-    return m_accessToken != "";
+    QSettings settings(OAUTH2_ORGANIZATION, OAUTH2_APPLICATION);
+    return !settings.value("accessToken").toString().isEmpty() &&
+            (QDateTime::currentDateTimeUtc() < settings.value("accessTokenExpireDate").toDateTime());
 }
 
 void OAuth2::startLogin(bool bForce)

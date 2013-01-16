@@ -44,8 +44,10 @@ private:
      * to interact with the OAuth 2.0 provider.
      * @param accessToken is a string representing the access token.
      * @param expireDate is the expire date of the token.
+     * @param refreshToken is the refresh token obtained by the server. If this string
+     * is empty the older one won't be overwritten.
      */
-    void setAccessToken(QString accessToken, QDateTime expireDate);
+    void setAccessToken(QString accessToken, QDateTime expireDate, QString refreshToken);
 
     /**
      * @brief requestAccessToken asks the OAuth 2.0 server for an access token
@@ -60,10 +62,6 @@ private:
      * this use the fallback case of requestAccessToken();
      */
     void refreshAccessToken();
-
-    QString m_refreshToken;
-    QString m_accessToken;
-    QDateTime m_accessTokenExpireDate;
 
     QNetworkAccessManager m_networkAccessManager;
 
