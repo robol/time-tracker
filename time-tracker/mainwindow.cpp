@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "calendarclient.h"
+#include "eventmatcher.h"
 #include <QDebug>
 #include <QMessageBox>
 
@@ -54,14 +55,23 @@ void MainWindow::on_computeButton_clicked()
     qDebug() << "Starting to compute the total time used for the tasks";
 
     EventListModel* model = m_client->getEventsModel();
+    EventMatcher matcher(ui->queryLineEdit->text());
 
     // Test code to show that we are really able to parse the Events
+    long long int totalHours = 0;
     for(int i = 0; i < model->rowCount(QModelIndex()); i++)
     {
         CalendarEvent* event = model->getEventAt(i);
-        qDebug() << "Event = " << event->getTitle() << " Duration = " << event->getDuration();
-        delete event;
+        if (matcher.match(*event)) {
+            totalHours += int(event->getDuration());
+            qDebug() << "Matching event found:" << event->getTitle() << " // Duration:"
+                     << event->getDuration();
+        }
+        else
+            qDebug() << "Non-matching event found:" << event->getTitle();
     }
+
+    qDebug() << "Total hours =" << totalHours;
 }
 
 void MainWindow::on_connectPushButton_clicked()

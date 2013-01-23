@@ -8,6 +8,7 @@ mainwindow.cpp
 calendarclient.cpp
 calendarevent.cpp
 calendarlistmodel.cpp
+eventmatcher.cpp
 main.cpp
 settings.cpp
 )
@@ -21,6 +22,7 @@ calendarclient.h
 calendarevent.h
 calendarlistmodel.h
 eventlistmodel.h
+eventmatcher.h
 mainwindow.h
 settings.h
 )
@@ -38,7 +40,7 @@ QT4_WRAP_UI (timetracker_FORMS_HEADERS ${timetracker_FORMS})
 
 INCLUDE (${QT_USE_FILE})
 INCLUDE_DIRECTORIES (${CMAKE_CURRENT_BINARY_DIR})
-ADD_DEFINITIONS (${QT_DEFINITIONS})
+ADD_DEFINITIONS (${QT_DEFINITIONS} ${QJSON_DEFINITIONS})
 
 ADD_EXECUTABLE (timetracker
         ${timetracker_SOURCES}
@@ -49,7 +51,8 @@ IF(WIN32)
   SET(ADDITIONAL_LDFLAGS -mwindows)
 ENDIF(WIN32)
 
-TARGET_LINK_LIBRARIES (timetracker ${QT_LIBRARIES} -lqjson
+TARGET_LINK_LIBRARIES (timetracker ${QT_LIBRARIES} 
+        ${QJSON_LDFLAGS} ${QJSON_LIBRARIES}
         -I${CMAKE_SOURCE_DIR}/time-tracker ${ADDITIONAL_LDFLAGS})
 
 INSTALL (TARGETS timetracker

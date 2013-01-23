@@ -5,6 +5,7 @@
 #include <QDateTime>
 #include <QMap>
 #include <QVariant>
+#include <QTime>
 
 /**
  * @brief The CalendarEvent class is wrapper around gcal_event_t objects.
@@ -28,14 +29,14 @@ public:
      * QDateTime object otherwise.
      * @return The start of the event.
      */
-    QDateTime getStart();
+    QDateTime getStart(QTime dayStart = QTime(8,0));
 
     /**
      * @brief getEnd returns the end of the event, if set, or an invalid
      * QDateTime object otherwise.
      * @return The end of the event.
      */
-    QDateTime getEnd();
+    QDateTime getEnd(QTime dayEnd = QTime(20,0));
 
     /**
      * @brief getDuration can be used to find the duration of an event. In the case
@@ -44,7 +45,7 @@ public:
      * @return The duration of the even in hours, or 0.0 if no start and/or end
      * date are set.
      */
-    double getDuration();
+    double getDuration(QTime dayStart = QTime(8, 0), QTime dayEnd = QTime(20,0));
 
 
 private:

@@ -13,34 +13,38 @@ CalendarEvent::~CalendarEvent()
 QString
 CalendarEvent::getTitle()
 {
+    if (!m_eventData.contains("summary")) {
+        return QString("");
+    }
+
     return m_eventData["summary"].toString();
 }
 
 QDateTime
-CalendarEvent::getStart()
+CalendarEvent::getStart(QTime dayStart)
 {
     QMap<QString,QVariant> start = m_eventData["start"].toMap();
     if (start.contains("dateTime"))
         return start["dateTime"].toDateTime();
     else
-        return start["date"].toDateTime().addSecs(3600 * 8);
+        return start["date"].toDateTime().addSecs(((dayStart.hour() * 60) + dayStart.minute() * 60) + dayStart.second());
 }
 
 QDateTime
-CalendarEvent::getEnd()
+CalendarEvent::getEnd(QTime dayEnd)
 {
     QMap<QString,QVariant> end = m_eventData["end"].toMap();
     if (end.contains("dateTime"))
          return end["dateTime"].toDateTime();
     else
-         return end["date"].toDateTime().addSecs(3600 * 19);
+        return end["date"].toDateTime().addSecs(((dayEnd.hour() * 60) + dayEnd.minute() * 60) + dayEnd.second());
 }
 
 double
-CalendarEvent::getDuration()
+CalendarEvent::getDuration(QTime dayStart, QTime dayEnd)
 {
-    QDateTime start = getStart();
-    QDateTime end = getEnd();
+    QDateTime start = getStart(dayStart);
+    QDateTime end = getEnd(dayEnd);
 
     if (start.isNull() || end.isNull())
         return 0;
