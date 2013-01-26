@@ -33,6 +33,20 @@ CalendarClient::~CalendarClient()
 }
 
 void
+CalendarClient::clearToken()
+{
+    m_activeCalendar = NULL;
+
+    qDebug() << "Clearing Token";
+    m_eventListModel->clearEvents();
+    qDebug() <<  "Cleared events";
+    m_calendarListModel->setCalendarList(QList<Calendar*>());
+
+    m_oauth2.clearToken();
+    qDebug() << "Token cleared";
+}
+
+void
 CalendarClient::onLoginDone()
 {
     m_calendarDataManager.getCalendars(m_oauth2.accessToken());
@@ -73,6 +87,8 @@ CalendarClient::getCalendarsModel()
 void
 CalendarClient::selectCalendar(int index)
 {
+    if (index < 0 || index >= m_calendarListModel->rowCount(QModelIndex()))
+        return;
     m_activeCalendar = m_calendarListModel->getCalendar(index);
     reloadEvents();
 }

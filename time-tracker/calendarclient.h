@@ -49,6 +49,11 @@ public:
      */
     void performAuthentication();
 
+    /**
+     * @brief clearToken can be used to remove the previous authentication.
+     */
+    void clearToken();
+
 private:
 
     /**

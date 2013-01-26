@@ -168,6 +168,15 @@ QString OAuth2::accessToken()
     return settings.value("accessToken").toString();
 }
 
+void OAuth2::clearToken()
+{
+    Settings settings;
+
+    settings.setValue("accessToken", "");
+    settings.setValue("accessTokenExpireDate", "");
+    settings.setValue("refreshToken", "");
+}
+
 bool OAuth2::isAuthorized()
 {
     Settings settings;

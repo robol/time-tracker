@@ -31,11 +31,12 @@ CalendarListModel::data(const QModelIndex &index, int role) const
 void
 CalendarListModel::setCalendarList(QList<Calendar*> calendars)
 {
-    // Remove calendars that were already in the list, if any.
-    qDeleteAll(m_calendars.begin(), m_calendars.end());
-    m_calendars.clear();
-
+    QList<Calendar*> oldList = m_calendars;
     m_calendars = calendars;
+
+    // Remove calendars that were already in the list, if any.
+    qDeleteAll(oldList.begin(), oldList.end());
+    oldList.clear();
 
     reset();
 }

@@ -90,6 +90,12 @@ void MainWindow::on_computeButton_clicked()
     mBox.exec();
 }
 
+void MainWindow::on_actionDisconnect_triggered()
+{
+    m_client->clearToken();
+    startAuthentication();
+}
+
 void MainWindow::startAuthentication()
 {
     m_client->performAuthentication();

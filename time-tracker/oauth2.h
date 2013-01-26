@@ -21,6 +21,8 @@ public:
 
     QString loginUrl();
 
+    void clearToken();
+
 signals:
     void loginDone();
 

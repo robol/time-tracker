@@ -24,6 +24,7 @@ private slots:
     void onAuthenticationFailed();
     void on_computeButton_clicked();
     void on_calendarComboBox_currentIndexChanged(int index);
+    void on_actionDisconnect_triggered();
 
 public slots:
     void clientLoadingEventsStarted();
