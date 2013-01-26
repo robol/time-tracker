@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "calendarclient.h"
+#include "eventmatcher.h"
 #include <QDebug>
 #include <QMessageBox>
 
@@ -25,6 +26,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->calendarComboBox->setModel(m_client->getCalendarsModel());
 }
 
+
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -35,6 +38,7 @@ void
 MainWindow::onClientConnected()
 {
     ui->statusBar->showMessage(tr("Connected to Google Calendar"));
+    authenticated();
 }
 
 void MainWindow::onAuthenticationFailed()
@@ -54,17 +58,39 @@ void MainWindow::on_computeButton_clicked()
     qDebug() << "Starting to compute the total time used for the tasks";
 
     EventListModel* model = m_client->getEventsModel();
+    EventMatcher matcher(ui->queryLineEdit->text());
+    matcher.setStartDate(ui->startCalendarWidget->selectedDate());
+    matcher.setEndDate(ui->endCalendarWidget->selectedDate());
 
     // Test code to show that we are really able to parse the Events
+    long long int totalMinutes = 0;
+    int events = 0;
     for(int i = 0; i < model->rowCount(QModelIndex()); i++)
     {
         CalendarEvent* event = model->getEventAt(i);
-        qDebug() << "Event = " << event->getTitle() << " Duration = " << event->getDuration();
-        delete event;
+        if (matcher.match(*event))
+        {
+            totalMinutes += int(60 * event->getDuration());
+            events += 1;
+            qDebug() << "Matching event found:" << event->getTitle() << " // Duration:"
+                     << event->getDuration();
+        }
+        else
+            qDebug() << "Non-matching event found:" << event->getTitle();
     }
+
+    // Display the total number of hours in a clean way
+    QMessageBox mBox(this);
+    mBox.setIcon(QMessageBox::Information);
+    mBox.setInformativeText(tr("<html><strong>%1</strong> events match the given pattern.<br />"
+                               "These accounts for a total of <strong>%2</strong> hours.</html>").
+                            arg(events).arg(totalMinutes / 60));
+    mBox.setText(tr("<html><strong>%1 hours matching the given pattern</strong></html>").arg(totalMinutes / 60));
+    mBox.setWindowTitle(tr("Computation completed"));
+    mBox.exec();
 }
 
-void MainWindow::on_connectPushButton_clicked()
+void MainWindow::startAuthentication()
 {
     m_client->performAuthentication();
 }

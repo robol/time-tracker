@@ -15,17 +15,20 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+signals:
+    void authenticated();
     
 private slots:
     void onClientConnected();
     void onAuthenticationFailed();
     void on_computeButton_clicked();
-    void on_connectPushButton_clicked();
     void on_calendarComboBox_currentIndexChanged(int index);
 
 public slots:
     void clientLoadingEventsStarted();
     void clientLoadingEventsFinished();
+    void startAuthentication();
 
 private:
     Ui::MainWindow *ui;
