@@ -153,12 +153,9 @@ QString OAuth2::loginUrl()
 QString OAuth2::accessToken()
 {
     Settings settings;
-    QString currentAccessToken = settings.value("accessToken").toString();
     QDateTime expireDate = settings.value("accessTokenExpireDate").toDateTime();
 
-    if (QDateTime::currentDateTimeUtc() < expireDate)
-        return currentAccessToken;
-    else
+    if (QDateTime::currentDateTimeUtc() >= expireDate)
     {
         qDebug() << "The token has expired";
         settings.setValue("accessToken", "");
@@ -167,6 +164,8 @@ QString OAuth2::accessToken()
         // or by retriggering the authentication process if it does not.
         retrieveAccessToken();
     }
+
+    return settings.value("accessToken").toString();
 }
 
 bool OAuth2::isAuthorized()
