@@ -48,7 +48,7 @@ ADD_EXECUTABLE (timetracker
         ${timetracker_FORMS_HEADERS})
 
 IF(WIN32)
-  SET(ADDITIONAL_LDFLAGS -mwindows)
+  SET(ADDITIONAL_LDFLAGS -mwindows -lqjson)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES (timetracker ${QT_LIBRARIES} 
