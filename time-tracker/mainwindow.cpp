@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "calendarclient.h"
 #include "eventmatcher.h"
+#include "logindialog.h"
 #include <QDebug>
 #include <QMessageBox>
 
@@ -22,16 +23,34 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(m_client, SIGNAL(loadingEventsStarted()), this, SLOT(clientLoadingEventsStarted()));
     QObject::connect(m_client, SIGNAL(loadingEventsFinished()), this, SLOT(clientLoadingEventsFinished()));
 
+
     // Get the calendar model and set it in the ComboBox
     ui->calendarComboBox->setModel(m_client->getCalendarsModel());
+
+    // Login handler setup.
+    QObject::connect(m_client, SIGNAL(loginHandlerRequired(QUrl)), this, SLOT(clientLoginHandlerRequired(QUrl)));
+    QObject::connect(&m_loginDialog, SIGNAL(accessTokenObtained()), this, SLOT(onAuthorizationTokenObtained()));
 }
-
-
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete m_client;
+}
+
+void
+MainWindow::clientLoginHandlerRequired(QUrl url)
+{
+    m_loginDialog.setLoginUrl(url);
+    m_loginDialog.show();
+}
+
+void
+MainWindow::onAuthorizationTokenObtained()
+{
+    m_client->setAuthorizationToken(m_loginDialog.authorizationToken());
+    m_loginDialog.setLoginUrl(QUrl(""));
+    m_loginDialog.hide();
 }
 
 void

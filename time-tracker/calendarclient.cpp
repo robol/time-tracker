@@ -24,12 +24,26 @@ CalendarClient::CalendarClient(QObject *parent) :
     // instance.
     connect(&m_calendarDataManager, SIGNAL(calendarListReady()), this, SLOT(reloadCalendarList()));
     connect(&m_calendarDataManager, SIGNAL(eventsReady()), this, SLOT(reloadEventList()));
+
+    connect(&m_oauth2, SIGNAL(loginHandlerRequired(QUrl)), this, SLOT(oauth2LoginHandlerRequired(QUrl)));
 }
 
 CalendarClient::~CalendarClient()
 {
     delete m_eventListModel;
     delete m_calendarListModel;
+}
+
+void
+CalendarClient::oauth2LoginHandlerRequired(QUrl url)
+{
+    emit loginHandlerRequired(url);
+}
+
+void
+CalendarClient::setAuthorizationToken(QString token)
+{
+    m_oauth2.authorizationTokenObtained(token);
 }
 
 void

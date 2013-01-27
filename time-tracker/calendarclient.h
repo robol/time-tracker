@@ -54,6 +54,13 @@ public:
      */
     void clearToken();
 
+    /**
+     * @brief setAuthorizationToken can be used to set the authorization token retrieved
+     * opening a webpage on the URL given by loginHandlerRequired().
+     * @param token is the authorization token obtained in the process above.
+     */
+    void setAuthorizationToken(QString token);
+
 private:
 
     /**
@@ -134,6 +141,13 @@ signals:
      */
     void loadingEventsFinished();
 
+    /**
+     * @brief loginHandlerRequired must be connected to a slot that will open a webpage
+     * with the given url, and will wait for the user to complete the authorization process.
+     * If it does end successfully it should then call setAuthorizationToken().
+     */
+    void loginHandlerRequired(QUrl url);
+
 private slots:
     /**
      * @brief onLoginDone perform the necessary actions needed after a succesful
@@ -151,6 +165,12 @@ private slots:
      * @brief reloadEventsList reload the list of events insde the m_eventListModel.
      */
     void reloadEventList();
+
+    /**
+     * @brief oauth2LoginHandlerRequired call the signal loginHandlerRequired with the parameter
+     * obtained by the OAuth2 module.
+     */
+    void oauth2LoginHandlerRequired(QUrl url);
     
 };
 

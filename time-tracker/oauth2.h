@@ -14,7 +14,7 @@ class OAuth2 : public QObject
     Q_OBJECT
 
 public:
-    OAuth2(QWidget* parent = 0);
+    OAuth2(QObject *parent = 0);
     QString accessToken();
     bool isAuthorized();
     void startLogin(bool bForce);
@@ -23,12 +23,15 @@ public:
 
     void clearToken();
 
+    void authorizationTokenObtained(QString authorizationToken);
+
+
 signals:
+    void loginHandlerRequired(QUrl url);
     void loginDone();
 
 private slots:
     void analyzeReply(QNetworkReply *reply);
-    void authorizationTokenObtained();
 
 private:
 
@@ -70,7 +73,7 @@ private:
     QString m_strRedirectURI;
     QString m_strResponseType;
 
-    LoginDialog* m_pLoginDialog;
+    // LoginDialog* m_pLoginDialog;
     QWidget* m_pParent;
 };
 

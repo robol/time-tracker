@@ -10,7 +10,7 @@
 #include <qjson/parser.h>
 #include "settings.h"
 
-OAuth2::OAuth2(QWidget* parent)
+OAuth2::OAuth2(QObject* parent)
 {
     connect (&m_networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(analyzeReply(QNetworkReply*)));
 
@@ -20,9 +20,8 @@ OAuth2::OAuth2(QWidget* parent)
     m_strRedirectURI = "urn:ietf:wg:oauth:2.0:oob";
     m_strResponseType = "code";
 
-    m_pLoginDialog = new LoginDialog(parent);
-    m_pParent = parent;
-    connect(m_pLoginDialog, SIGNAL(accessTokenObtained()), this, SLOT(authorizationTokenObtained()));
+    // m_pLoginDialog = new LoginDialog(parent);
+    // connect(m_pLoginDialog, SIGNAL(accessTokenObtained()), this, SLOT(authorizationTokenObtained()));
 }
 
 void
@@ -76,15 +75,15 @@ void OAuth2::setAccessToken(QString accessToken, QDateTime expireDate, QString r
         settings.setValue("refreshToken", refreshToken);
 
     // Complete the login process, if any
-    m_pLoginDialog->setLoginUrl("");
+    // m_pLoginDialog->setLoginUrl("");
 
     emit loginDone();
 }
 
-void OAuth2::authorizationTokenObtained()
+void OAuth2::authorizationTokenObtained(QString authorizationToken)
 {
     // Get the authorization token and use it as a refresh token.
-    requestAccessToken(m_pLoginDialog->authorizationToken());
+    requestAccessToken(authorizationToken);
 }
 
 void OAuth2::requestAccessToken(QString authorizationToken)
@@ -137,8 +136,10 @@ OAuth2::retrieveAccessToken()
     {
         // Show the login dialog so that the user can authorize the application
         // to handle his data.
-        m_pLoginDialog->setLoginUrl(loginUrl());
-        m_pLoginDialog->show();
+        qDebug() << "Asking the application to provide a login handler";
+        emit loginHandlerRequired(QUrl(loginUrl()));
+//        m_pLoginDialog->setLoginUrl(loginUrl());
+//        m_pLoginDialog->show();
     }
 }
 

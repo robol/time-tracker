@@ -16,7 +16,7 @@ class LoginDialog : public QDialog
 public:
     explicit LoginDialog(QWidget *parent = 0);
     ~LoginDialog();
-    void setLoginUrl(const QString& url);
+    void setLoginUrl(const QUrl &url);
     QString authorizationToken();
 
 signals:

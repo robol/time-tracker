@@ -68,8 +68,7 @@ QString LoginDialog::authorizationToken()
 }
 
 
-void LoginDialog::setLoginUrl(const QString& url)
+void LoginDialog::setLoginUrl(const QUrl& url)
 {
-    //ui->webView->setUrl(QUrl(""));
-   ui->webView->setUrl(QUrl(url));
+   ui->webView->setUrl(url);
 }
