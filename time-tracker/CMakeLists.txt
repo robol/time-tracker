@@ -11,9 +11,14 @@ calendarlistmodel.cpp
 eventmatcher.cpp
 main.cpp
 settings.cpp
+qmlwindow.cpp
 )
 
 SET (timetracker_HEADERS
+eventmatcher.h
+)
+
+SET (timetracker_QT_HEADERS
 logindialog.h
 oauth2.h
 calendar_data_manager.h
@@ -22,18 +27,21 @@ calendarclient.h
 calendarevent.h
 calendarlistmodel.h
 eventlistmodel.h
-eventmatcher.h
 mainwindow.h
 settings.h
+qmlwindow.h
 )
 
 SET (timetracker_FORMS
 mainwindow.ui
 logindialog.ui
+qmlwindow.ui
 )
 
+QT4_ADD_RESOURCES(timetracker_RCC_SRCS timetracker.qrc)
+
 QT4_WRAP_CPP (timetracker_HEADERS_MOC
-        ${timetracker_HEADERS}
+        ${timetracker_QT_HEADERS}
 )
 
 QT4_WRAP_UI (timetracker_FORMS_HEADERS ${timetracker_FORMS})
@@ -44,8 +52,10 @@ ADD_DEFINITIONS (${QT_DEFINITIONS} ${QJSON_DEFINITIONS})
 
 ADD_EXECUTABLE (timetracker
         ${timetracker_SOURCES}
+        ${timetracker_HEADERS}
         ${timetracker_HEADERS_MOC}
-        ${timetracker_FORMS_HEADERS})
+        ${timetracker_FORMS_HEADERS}
+	${timetracker_RCC_SRCS})
 
 IF(WIN32)
   SET(ADDITIONAL_LDFLAGS -mwindows -lqjson)

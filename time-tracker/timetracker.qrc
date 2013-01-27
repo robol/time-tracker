@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/Calendar.qml</file>
+        <file>qml/Event.qml</file>
+    </qresource>
+</RCC>
